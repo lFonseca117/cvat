@@ -1,0 +1,268 @@
+// Copyright (C) CVAT.ai Corporation
+//
+// SPDX-License-Identifier: MIT
+
+// Layout adjustments for phones and tablets.
+// Kept in one file so the overrides are easy to find and to maintain
+// when merging changes from the upstream repository.
+
+@import 'base';
+
+$header-collapse-breakpoint: 1100px; // navigation buttons stop fitting into the header
+$mobile-breakpoint: 768px;
+$small-mobile-breakpoint: 480px;
+$mobile-side-gutter: $grid-unit-size * 1.5;
+
+// -------- Page width --------
+
+// The application root has a fixed minimum width of 1024px (see styles.scss), so on phones
+// every page was rendered as a zoomed-out desktop page. It is kept only for the annotation
+// editor, which really needs that much space; the rest of the pages adapt to the screen.
+#root:not(:has(.cvat-annotation-page)) {
+    min-width: 0;
+}
+
+// -------- Header --------
+
+.cvat-header .cvat-left-header .ant-btn.cvat-header-mobile-menu-button {
+    display: none;
+}
+
+@media screen and (width < $header-collapse-breakpoint) {
+    .cvat-header {
+        .cvat-left-header {
+            min-width: 0;
+
+            .ant-btn.cvat-header-button {
+                display: none;
+            }
+
+            .ant-btn.cvat-header-mobile-menu-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 1;
+                margin: 0 0 0 $grid-unit-size;
+
+                span[role='img'] {
+                    font-size: 20px;
+                }
+            }
+
+            .cvat-logo-icon {
+                margin: 0 $grid-unit-size;
+            }
+        }
+
+        .cvat-right-header {
+            width: auto;
+            flex-shrink: 0;
+        }
+    }
+}
+
+.cvat-header-mobile-menu.ant-dropdown-menu {
+    min-width: $grid-unit-size * 26;
+
+    .ant-dropdown-menu-item {
+        padding: $grid-unit-size * 1.5 $grid-unit-size * 2;
+        font-size: 16px;
+    }
+}
+
+@media screen and (width < $mobile-breakpoint) {
+    .cvat-header .cvat-right-header {
+        .cvat-open-repository-button {
+            display: none;
+        }
+
+        .ant-btn.cvat-header-button {
+            margin-right: 0;
+        }
+    }
+}
+
+@media screen and (width < $small-mobile-breakpoint) {
+    .cvat-header .cvat-right-header {
+        // the guide is available from the navigation menu
+        .cvat-open-guide-button {
+            display: none;
+        }
+
+        .cvat-header-menu-user-dropdown > div:nth-child(2) {
+            max-width: $grid-unit-size * 10;
+        }
+    }
+}
+
+// -------- Sign in / sign up / password reset --------
+
+@media screen and (width < $mobile-breakpoint) {
+    // the background has a fixed minimum width that made the whole page wider than the screen
+    .ant-layout:has(> .cvat-signing-background) {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cvat-signing-layout .ant-col:has(
+        > .cvat-login-form-wrapper,
+        > .cvat-register-form-wrapper,
+        > .cvat-password-reset-form-wrapper
+    ) {
+        flex: 0 0 calc(100% - #{$mobile-side-gutter * 2});
+        max-width: calc(100% - #{$mobile-side-gutter * 2});
+    }
+
+    .cvat-login-form-wrapper,
+    .cvat-register-form-wrapper,
+    .cvat-password-reset-form-wrapper {
+        padding: $grid-unit-size * 3;
+    }
+}
+
+// -------- Projects / Tasks / Jobs lists --------
+
+@media screen and (width < $mobile-breakpoint) {
+    .cvat-projects-page,
+    .cvat-tasks-page,
+    .cvat-jobs-page {
+        padding-left: $mobile-side-gutter;
+        padding-right: $mobile-side-gutter;
+    }
+
+    // Top bars: search (and the "+" create button) on the first line,
+    // sorting / filters / export flowing on the next lines
+    .cvat-projects-page-top-bar > div,
+    .cvat-tasks-page-top-bar > div {
+        position: relative;
+
+        // the "+" create button
+        > div:last-child:not(:first-child) {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        > div:first-child > div:first-child {
+            width: calc(100% - #{$grid-unit-size * 5});
+        }
+    }
+
+    .cvat-projects-page .cvat-projects-page-top-bar > div > .cvat-projects-page-filters-wrapper,
+    .cvat-tasks-page .cvat-tasks-page-top-bar > div > .cvat-tasks-page-filters-wrapper,
+    .cvat-jobs-page .cvat-jobs-page-top-bar > div > div {
+        flex-direction: column;
+        align-items: stretch;
+        row-gap: $grid-unit-size;
+
+        > div {
+            flex-wrap: wrap;
+            align-items: center;
+            gap: $grid-unit-size;
+            margin-right: 0;
+
+            > *:not(:last-child) {
+                margin-right: 0;
+            }
+        }
+
+        .cvat-resource-page-filters {
+            display: contents;
+
+            > * {
+                margin-right: 0;
+            }
+        }
+
+        .cvat-projects-page-search-bar,
+        .cvat-tasks-page-search-bar,
+        .cvat-jobs-page-search-bar {
+            width: auto;
+            flex: 1;
+            min-width: 0;
+        }
+    }
+
+    // Card grids (projects and jobs): two cards per row
+    .cvat-projects-list .cvat-projects-list-row,
+    .cvat-jobs-page .cvat-jobs-page-list .cvat-jobs-list-row {
+        flex-wrap: wrap;
+        row-gap: $grid-unit-size;
+        margin-bottom: $grid-unit-size;
+
+        > .ant-col,
+        > .ant-col:not(:first-child) {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding-left: 0;
+        }
+
+        > .ant-col {
+            &:nth-child(even) {
+                padding-left: $grid-unit-size;
+            }
+        }
+    }
+
+    .cvat-jobs-page .cvat-job-page-list-item,
+    .cvat-project-list-content .cvat-projects-project-item-card {
+        // the card height is computed for the desktop grid, so it is overridden here
+        height: $grid-unit-size * 30 !important;
+    }
+
+    // Task rows: preview + name on the first line, progress + buttons on the second one
+    .cvat-tasks-list .cvat-tasks-list-item {
+        height: auto;
+        row-gap: $grid-unit-size;
+        padding: $grid-unit-size;
+
+        > .ant-col:nth-child(1) {
+            flex: 0 0 35%;
+            max-width: 35%;
+        }
+
+        > .ant-col:nth-child(2) {
+            flex: 0 0 65%;
+            max-width: 65%;
+            padding-left: $grid-unit-size;
+        }
+
+        > .ant-col:nth-child(3) {
+            flex: 1 1 0;
+            max-width: none;
+        }
+
+        > .ant-col:nth-child(4) {
+            flex: 0 0 auto;
+            max-width: none;
+            padding-left: $grid-unit-size;
+        }
+    }
+
+    .cvat-resource-pagination-wrapper .ant-pagination-options {
+        display: none;
+    }
+}
+
+@media screen and (width < $small-mobile-breakpoint) {
+    // One card per row on small phones
+    .cvat-projects-list .cvat-projects-list-row,
+    .cvat-jobs-page .cvat-jobs-page-list .cvat-jobs-list-row {
+        > .ant-col,
+        > .ant-col:not(:first-child),
+        > .ant-col:nth-child(even) {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding-left: 0;
+        }
+    }
+
+    .cvat-tasks-list .cvat-tasks-list-item {
+        > .ant-col:nth-child(1),
+        > .ant-col:nth-child(2) {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding-left: 0;
+        }
+    }
+}

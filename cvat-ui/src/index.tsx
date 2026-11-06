@@ -41,6 +41,7 @@ import {
     CombinedState, GrowthState, NotificationsState, PluginsState,
 } from './reducers';
 import './utils/dayjs-wrapper';
+import './responsive.scss';
 
 createCVATStore(createRootReducer);
 

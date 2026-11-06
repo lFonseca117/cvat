@@ -22,6 +22,7 @@ import {
     TeamOutlined,
     PlusOutlined,
     MailOutlined,
+    MenuOutlined,
 } from '@ant-design/icons';
 import Layout from 'antd/lib/layout';
 import Button from 'antd/lib/button';
@@ -399,10 +400,48 @@ function HeaderComponent(props: Props): JSX.Element {
             `${baseClass} cvat-active-header-button` : baseClass;
     };
 
+    // Navigation for narrow screens; the regular buttons below are hidden there via CSS
+    const mobileNavigationItems: NonNullable<MenuProps['items']> = [
+        { key: '/projects', label: 'Projects' },
+        { key: '/tasks', label: 'Tasks' },
+        { key: '/jobs', label: 'Jobs' },
+        { key: '/cloudstorages', label: 'Cloud Storages' },
+        { key: '/requests', label: 'Requests' },
+        { key: '/models', label: 'Models' },
+        ...(isAnalyticsPluginActive && user.hasAnalyticsAccess ? [{ key: '/analytics', label: 'Analytics' }] : []),
+        { type: 'divider' as const },
+        { key: GUIDE_URL, label: 'Guide' },
+    ];
+
     return (
         <Layout.Header className='cvat-header'>
             <GlobalHotKeys keyMap={subKeyMap(componentShortcuts, keyMap)} handlers={handlers} />
             <div className='cvat-left-header'>
+                <Dropdown
+                    trigger={['click']}
+                    destroyPopupOnHide
+                    placement='bottomLeft'
+                    menu={{
+                        items: mobileNavigationItems,
+                        selectable: true,
+                        selectedKeys: [`/${location.pathname.split('/')[1]}`],
+                        className: 'cvat-header-mobile-menu',
+                        onClick: ({ key }) => {
+                            if (key === '/analytics' || key.startsWith('http')) {
+                                window.open(key, '_blank');
+                            } else {
+                                history.push(key);
+                            }
+                        },
+                    }}
+                >
+                    <Button
+                        type='link'
+                        icon={<MenuOutlined />}
+                        aria-label='Open navigation menu'
+                        className='cvat-header-mobile-menu-button cvat-header-button'
+                    />
+                </Dropdown>
                 <CVATLogo />
                 <Button
                     className={getButtonClassName('projects')}
